@@ -7,9 +7,11 @@ COMPILER = C:/PROGRA~2/MICROS~2/2022/BUILDT~1/VC/Tools/MSVC/14.44.35207/bin/Host
 
 # SDK de Windows (rutas en formato 8.3 para evitar problemas con espacios)
 WINSDK_INCLUDE = \
-	C:/PROGRA~2/WINDOW~2/10/Include/10.0.22621.0/ucrt \
-	C:/PROGRA~2/WINDOW~2/10/Include/10.0.22621.0/shared \
-	C:/PROGRA~2/WINDOW~2/10/Include/10.0.22621.0/um
+        C:/PROGRA~2/WINDOW~2/10/Include/10.0.22621.0/ucrt \
+        C:/PROGRA~2/WINDOW~2/10/Include/10.0.22621.0/shared \
+        C:/PROGRA~2/WINDOW~2/10/Include/10.0.22621.0/um
+
+PYTHON_SAFE_DIR = $(CURDIR)/..
 
 ###############################################################################
 # Targets
@@ -24,28 +26,29 @@ QSWATPlus3_9:
 		build
 
 QSWATPlus3_12:
-	$(MAKE) QSWAT_PROJECT=QSWATPlus \
-		PYTHON_INCLUDE="C:/OSGeo4W/apps/Python312/include C:/OSGeo4W/apps/Python312/Lib/site-packages/numpy/core/include" \
-		PYTHON_LIB="C:/OSGeo4W/apps/Python312/libs" \
-		PYTHON_EXE="C:/OSGeo4W/bin/python3.exe" \
-		CYTHON="C:/OSGeo4W/bin/python3.exe -m cython" \
-		build
+        $(MAKE) QSWAT_PROJECT=QSWATPlus \
+                PYTHONHOME="C:/OSGeo4W/apps/Python312" \
+                PYTHON_INCLUDE="C:/OSGeo4W/apps/Python312/include C:/OSGeo4W/apps/Python312/Lib/site-packages/numpy/core/include" \
+                PYTHON_LIB="C:/OSGeo4W/apps/Python312/libs" \
+                PYTHON_EXE="C:/OSGeo4W/bin/python3.exe" \
+                CYTHON="C:/OSGeo4W/bin/python3.exe -m cython" \
+                build
 
 ###############################################################################
 # Build rules
 ###############################################################################
 
 build:
-	@echo "Compilando $(QSWAT_PROJECT) usando Python en $(PYTHON_EXE)"
-	@echo "Incluyendo: $(PYTHON_INCLUDE)"
-	@echo "Librería: $(PYTHON_LIB)"
-	$(CYTHON) --fast-fail --cplus -3 -o jenks.c jenks.pyx
-	$(CYTHON) --fast-fail --cplus -3 -o dataInC.c dataInC.pyx
-	$(CYTHON) --fast-fail --cplus -3 -o polygonizeInC.c polygonizeInC.pyx
-	$(COMPILER) /nologo /O2 /EHsc /LD /TP \
-		$(foreach inc,$(PYTHON_INCLUDE),/I$(inc)) \
-		$(foreach inc,$(WINSDK_INCLUDE),/I$(inc)) \
-		jenks.c /link /OUT:jenks.pyd /LIBPATH:$(PYTHON_LIB)
+        @echo "Compilando $(QSWAT_PROJECT) usando Python en $(PYTHON_EXE)"
+        @echo "Incluyendo: $(PYTHON_INCLUDE)"
+        @echo "Librería: $(PYTHON_LIB)"
+        cd $(PYTHON_SAFE_DIR) && $(CYTHON) --fast-fail --cplus -3 -o $(CURDIR)/jenks.c $(CURDIR)/jenks.pyx
+        cd $(PYTHON_SAFE_DIR) && $(CYTHON) --fast-fail --cplus -3 -o $(CURDIR)/dataInC.c $(CURDIR)/dataInC.pyx
+        cd $(PYTHON_SAFE_DIR) && $(CYTHON) --fast-fail --cplus -3 -o $(CURDIR)/polygonizeInC.c $(CURDIR)/polygonizeInC.pyx
+        $(COMPILER) /nologo /O2 /EHsc /LD /TP \
+                $(foreach inc,$(PYTHON_INCLUDE),/I$(inc)) \
+                $(foreach inc,$(WINSDK_INCLUDE),/I$(inc)) \
+                jenks.c /link /OUT:jenks.pyd /LIBPATH:$(PYTHON_LIB)
 	$(COMPILER) /nologo /O2 /EHsc /LD /TP \
 		$(foreach inc,$(PYTHON_INCLUDE),/I$(inc)) \
 		$(foreach inc,$(WINSDK_INCLUDE),/I$(inc)) \
