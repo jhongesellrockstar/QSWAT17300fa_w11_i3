@@ -1,0 +1,58 @@
+###############################################################################
+# QSWATPlus Makefile - Adaptado para Python 3.12 y 3.9
+###############################################################################
+
+# Variables comunes
+QSWAT_PROJECT = QSWATPlus
+COMPILER = "C:/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x64/cl.exe"
+
+###############################################################################
+# Targets
+###############################################################################
+
+QSWATPlus3_9:
+	$(MAKE) QSWAT_PROJECT=QSWATPlus \
+		PYTHON_INCLUDE="/IC:/OSGeo4W/apps/Python39/include" \
+		PYTHON_LIB="C:/OSGeo4W/apps/Python39/libs/python39.lib" \
+		PYTHON_EXE="C:/OSGeo4W/bin/python3.exe" \
+		CYTHON="C:/OSGeo4W/bin/python3.exe -m cython" \
+		build
+
+QSWATPlus3_12:
+	$(MAKE) QSWAT_PROJECT=QSWATPlus \
+		PYTHON_INCLUDE="/IC:/OSGeo4W/apps/Python312/include /IC:/OSGeo4W/apps/Python312/Lib/site-packages/numpy/core/include" \
+		PYTHON_LIB="C:/OSGeo4W/apps/Python312/libs/python312.lib" \
+		PYTHON_EXE="C:/OSGeo4W/bin/python3.exe" \
+		CYTHON="C:/OSGeo4W/bin/python3.exe -m cython" \
+		build
+
+###############################################################################
+# Build rules
+###############################################################################
+
+# Build rule - compila todos los módulos Cython
+build:
+	@echo "Compilando $(QSWAT_PROJECT) usando Python en $(PYTHON_EXE)"
+	@echo "Incluyendo: $(PYTHON_INCLUDE)"
+	@echo "Librería: $(PYTHON_LIB)"
+	$(CYTHON) --fast-fail --cplus -3 -o jenks.c jenks.pyx
+	$(CYTHON) --fast-fail --cplus -3 -o dataInC.c dataInC.pyx
+	$(CYTHON) --fast-fail --cplus -3 -o polygonizeInC.c polygonizeInC.pyx
+	$(COMPILER) /nologo /O2 /EHsc /LD /TP $(PYTHON_INCLUDE) jenks.c /link /OUT:jenks.pyd /LIBPATH:$(PYTHON_LIB)
+	$(COMPILER) /nologo /O2 /EHsc /LD /TP $(PYTHON_INCLUDE) dataInC.c /link /OUT:dataInC.pyd /LIBPATH:$(PYTHON_LIB)
+	$(COMPILER) /nologo /O2 /EHsc /LD /TP $(PYTHON_INCLUDE) polygonizeInC.c /link /OUT:polygonizeInC.pyd /LIBPATH:$(PYTHON_LIB)
+
+###############################################################################
+# Clean rule
+###############################################################################
+
+clean:
+	@echo "Limpiando archivos generados..."
+	-del /Q jenks.c dataInC.c polygonizeInC.c
+	-del /Q jenks.pyd dataInC.pyd polygonizeInC.pyd
+
+###############################################################################
+# Default target
+###############################################################################
+
+all: QSWATPlus3_12

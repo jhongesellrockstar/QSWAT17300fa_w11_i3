@@ -1,0 +1,182 @@
+21/7/2019  #1
+layer.fieldNameIndex -> layer.dataProvider().fieldnameIndex
+QSWATTopology line 520
+
+26/7/2019  #2
+wgn files need to be read as fixed length, not with split
+convertFromArc.py
+
+26/8/2019  #3
+Another instance of #1!!
+
+28/8/2019  #4
+getLayerByFilename returns a pair.  type check would find.
+delineation.py
+
+30/8/2019  #5
+removeFields is case sensitive on field names: use casefold to avoid
+QSWATTopology.py
+
+2/9/2019  #6
+demNoData set after grid lakes set up.  Moved from SetUp to SetUp0.
+QSWATTopology.py
+
+9/10/2019  #7
+self.variableCombo -> self._dlg.variableCombo (3 times)
+visualise.py
+
+8/11/2019  #8
+water body category could be 'unknown'
+hrus.py
+
+10/11/2019 #9
+failed to define chLink when listing crossing points
+delineation.py line 773
+
+12/10/2019 #10
+removing point from list after it had been adjusted failed
+delineation.py line 772
+
+21/2/2020 #11
+sniffer limit of 1000 failed on usersoil csv file: removed limits
+DBUtils.py lines 2437, 2495
+
+28/2/2020 #12
+channel basin totally inside lake needs to be removed, and subbasin may need removing if same as channel basin
+QSWATTopology.py line 822, 2071, 639
+
+6/3/2020  #13
+soil map (and landuse) can have gaps when lookup table is many-one.
+QSWATUtils.py colourLanduses and colourSoils
+
+14/3/2020 #14
+lake / basin overlap inadequate test: replaced with non-disjoint
+QSWTTopology line 1425
+
+18/3/2020 #15
+failed to redefine chLink when channel changed
+delineation.py line 775
+
+18/3/2020 #16
+should check no dsNode before pulling short outlet channel into lake
+QSWATTopology.py line 988
+
+18/3/2020 #17
+Failed to check valueAtPoint for None
+QSWATTopology.py line 2011
+
+22/4/2020 #18
+Misplaced parenthesis.  Typecheck would find (should have been listed earlier, probably October 2019).
+QSWATtopology.py line 1516
+
+15/2/2021 # 19
+createUsersoilTable misspelt; 'usersoil' instead of 'arc_usersoil' in SQL
+One test run would have found these!  Should have been found and listed October 2019
+convertFromArc.py lines 1154, 1247
+
+23/2/2021 # 20
+Downstream channel does not exist when it is a reservoir
+visualise.py line 3477
+
+10/3/2021 # 21
+scene.items() crashes on some machines
+visualise.py line 3360
+
+8/1/2022 # 22
+Small subbasins and many elevation bands can cause index error,
+as actual number of bands cannot exceed number of integer elevations in subbasin
+DBUtils.py line 2468
+
+2/3/2022 # 23
+qt4agg reference in matplotlib fails with QGIS 3.22
+Changed to qt5agg
+swatgraph.py line 26
+
+5/3/2022 # 24
+Creation of extra reservoirs file needs to check if existing file has POINTID field
+delineation.py line 4645 ff
+
+28/3/2022 # 25
+x and yThreshold wrong for non-metre maps
+QSWATtopology.py line 326-7
+
+19/5/2022 # 26
+Merging channel that is a lake outlet left lake with no outlet
+hrus.py line 1264-70
+
+12/4/2023 # 27
+Inadequate check for usegrid checked
+
+12/4/2023 # 28
+Channels meeting at their last points regarded as connected
+
+12/4/2023 # 29
+BasinNo field not added to existing streams shapefile
+
+5/5/2023 # 30
+Reservoirs formed by threshold could remove all HRUs from a landscape unit, which was not catered for.
+
+25/8/2023 # 31
+Continuation of 30: lsus with no hrus not always removed.
+
+30/8/2023 # 32
+Import from Cython accidentally inserted int dataInC.pyx
+
+5/9/2023 # 33
+gwflow dependency on matplotlib_scalebar provented loading of plugin
+
+
+6/9/2023 # 34
+QGIS 3.28 miswrites multipolygon with multiple parts: classifies a separate part as a hole.
+
+30/10/2023 # 35
+error in calculating drop for merged streams when merging subbasins
+delineation.py lines 3467, 3469
+
+4/12/2023 # 36
+Poor algorithm for finding lake entry/exit points
+
+3/1/2024 # 37
+Looking for valley depths file with user-generated floodplain raster
+hrus.py lines 3889-90
+
+13/4/2024 # 38
+Improved check to distinguish inlet/outlet from lake by searches from end of stream
+References to STATSGO2 removed
+
+20/6/2024 # 39
+Check for res==1 replaced by res!=0 since failed to allow for res==2
+delineation.py lines 618, 626
+
+16/7/2024 # 40
+all zero length channels included in zeroChannels so that inlet/outlet points too close to junctions detected
+QSWATTopology.py line 540
+
+1/8/2024 # 41
+Large positive nodata values in soil and landuse maps supported
+Spaces in project name supported
+
+23/10/2024 # 42
+Selecting HRUs by target could start with a negative number to remove, if some already removed by addReservoirs
+hrus.py line 2637
+
+23/10/2024 # 43
+Typo in text format
+gwflow.py line 1477
+
+23/10/2024 # 44
+Inaccurate code for calculating columns and rows in fishnet
+gwflow.py line 1070
+
+11/12/2024 # 45
+Did not allow all lakes to be outside watershed
+gwflow.py line 718
+
+11/12/2024 # 46
+DSNODEID1 needed for HUC12 models
+QSWATTopology.py line 4245
+
+11/12/2014 # 47
+Added code to prevent reachableFrom looping indefinitely
+QSWATTopology.py line 4196 
+
